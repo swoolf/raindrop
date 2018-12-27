@@ -39,13 +39,13 @@ void setup() {
     ///////////////////////////////////////////////////////////SetUP WIFI
     Particle.connect(); //try to connect to wifi
     unsigned long start = millis();
-
+    
     strip.begin();
-
+    
     while(! Particle.connected() && start+upTime>millis()){ //Wait for upTime to look for connection, ~20secs
       breathe(GREEN);
     }
-
+    
     if (! Particle.connected()){// if not connected, engage user setup
     //   breathe(BLUE);
       wifiState=1;
@@ -59,25 +59,25 @@ void setup() {
     int zipCode = EEPROM.get(0, i);
     zipCodeStr=String(zipCode);
     int sendInfo = EEPROM.get(10,j);
-
+ 
     if(sendInfo==1){
         Particle.subscribe("particle/device/name", dnameHandler);
         Particle.publish("particle/device/name");
         EEPROM.put(10,0);
         }
-
+    
     if(System.updatesPending()){
         delay(10*1000);
     }
-
+    
     Serial.println("zipfromMem: "+zipCodeStr);
-
+    
     //Get handler name from Azure
     String rainHandler = getName(zipCode);
     Serial.println("Handler: " + rainHandler + "rainDial");
     Particle.subscribe(rainHandler + "rainDial", myHandler, MY_DEVICES);
 
-
+    
     //Start up Disco
     startUpDisco();
 
@@ -99,7 +99,7 @@ void dnameHandler(const char *topic, const char *data) {
     String deviceName = String(data);
     Particle.publish("sendDeviceInfo", String(zipCodeStr) +", "+ deviceName, PRIVATE);
 }
-
+          
 
 //update LEDs with weather info.
 void weather2LEDs(int probability[], int offset) {
@@ -144,18 +144,18 @@ void breathe(int R, int G, int B) {
 void startUpDisco(){
     int halfpix= round(npix/2);
     for (int i=0; i<npix;i++){strip.setPixelColor(i, OFF);}
-
+    
     meltDownUp(LIGHTBLUE, BLUE);
     meltDownUp(PURPLE, BLUE);
     meltDownUp(CYAN, BLUE);
-
+    
     for(int i=0; i<halfpix+1; i++){
         strip.setPixelColor(i, OFF);
         strip.setPixelColor(( npix-1)-i, OFF);
         strip.show();
         delay(100);
     }
-
+    
 }
 
 void meltDownUp(int R1, int G1, int B1, int R2, int G2, int B2){
@@ -173,3 +173,9 @@ void meltDownUp(int R1, int G1, int B1, int R2, int G2, int B2){
         delay(75);
     }
 }
+
+
+
+
+
+
